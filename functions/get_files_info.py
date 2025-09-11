@@ -11,4 +11,7 @@ def get_files_info(working_directory, directory="."):
         return f'Error: "{directory}" is not a directory'
 
     for document in directory:
-        print(f'- {os.path.basename(document)}: file_size={os.path.getsize(document)} bytes, is_dir={os.path.isdir(document)}')
+        try:
+            print(f'- {os.path.basename(document)}: file_size={os.path.getsize(document)} bytes, is_dir={os.path.isdir(document)}')
+        except Exception as error:
+            print(f'Error: {error}')
