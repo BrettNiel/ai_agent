@@ -1,0 +1,18 @@
+import os
+
+def run_python_file(working_directory, file_path, args=[]):
+
+    absolute_path = os.path.realpath(working_directory)
+    intended_path = os.path.join(absolute_path, file_path)
+    true_path = os.path.realpath(intended_path)
+
+    if not true_path.startswith(absolute_path):
+        return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
+
+    if not os.path.exists(true_path):
+        return f'Error: File "{file_path}" not found.'
+    
+    if true_path[-2:] != 'py':
+        return f'Error: "{file_path}" is not a Python file.'
+    
+    
