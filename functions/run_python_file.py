@@ -13,11 +13,12 @@ def run_python_file(working_directory, file_path, args=[]):
     if not os.path.exists(true_path):
         return f'Error: File "{file_path}" not found.'
     
-    if true_path[-2:] != 'py':
+    if not true_path.endswith('.py'):
         return f'Error: "{file_path}" is not a Python file.'
     
     try:
-        result = subprocess.run(args, timeout=30, capture_output=True, check=True)
+        edited_arguments = ['python', true_path] + args
+        result = subprocess.run(edited_arguments, timeout=30, cwd=working_directory, capture_output=True, check=True)
         if result.stdout == None:
             return f'No output produced'
         return f'STDOUT: {result.stdout}, \nSTDERR:{result.stderr}'
