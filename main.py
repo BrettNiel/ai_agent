@@ -32,7 +32,17 @@ def main():
 
     messages = [types.Content(role="user", parts=[types.Part(text=user_prompt)]),]
 
-    generate_content(client, messages, user_prompt, flag)
+    count = 0
+    while count < 20:
+        try:
+            resp = generate_content(client, messages, user_prompt, flag)
+            if resp:
+                print(resp)
+                break
+        except Exception as error:
+            print(f'An unexpected error occurred: {error} - please try again.')
+        count += 1
+
 
 def generate_content(client, messages, user_prompt, flag):
     available_functions = types.Tool(
@@ -60,7 +70,6 @@ def generate_content(client, messages, user_prompt, flag):
                 print(response.text)    
             return response.text
     
-
     function_messages = []
     for function_call in response.function_calls:
         result_content = call_function(function_call, verbose=(flag == '--verbose'))
