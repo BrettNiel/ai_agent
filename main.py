@@ -52,11 +52,16 @@ def generate_content(client, messages, user_prompt, flag):
         )
     )
 
+    for candidate in response.candidates:
+        messages.append(candidate.content)
+
     if not response.function_calls:
             if flag == '--verbose':
                 print(response.text)    
             return response.text
     
+
+    function_messages = []
     for function_call in response.function_calls:
         result_content = call_function(function_call, verbose=(flag == '--verbose'))
         if not result_content.parts or not getattr(result_content.parts[0], 'function_response', None):
@@ -64,6 +69,11 @@ def generate_content(client, messages, user_prompt, flag):
         resp = result_content.parts[0].function_response.response
         if flag == "--verbose":
             print(f"-> {resp}")
+        function_messages.append(result_content.parts[0])
+    messages.append(types.Content(
+        role="user",
+        parts=function_messages
+    ))
         
 functions_dict = {
     'get_file_content': get_file_content,
